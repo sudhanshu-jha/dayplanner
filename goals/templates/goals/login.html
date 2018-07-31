@@ -1,0 +1,12 @@
+{% extends 'goals/base.html' %} 
+{% load widget_tweaks %}
+{% block content %}
+
+<h1 class="h1 mb-title "> {% block title %}Log in {% endblock %}</h1>
+<form method="post">
+        {% csrf_token %} {{ form}}
+        <input type="submit" value="Submit" class="btn btn-primary" />
+        <a href="{% url 'signup' %}" class="btn btn-success" >New to My Site? Sign up</a>
+</form>
+
+{% endblock %}

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <div class="table-responsive-sm ">
+        <title>{% block title %}Dayplanner{% endblock %} </title>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1 ,shrink-to-fit=no">
+        <!-- Bootstrap CSS -->
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB"
+            crossorigin="anonymous">
+    </div>    
+</head>
+
+<body>
+<div class="container">
+    <div>
+        <h1 style="float: left;">Goals {{user}}</h1>
+        <!-- <a href="{% url 'login' %}" class="btn btn-secondary" style="float: right;">Login</a> -->
+        <a href="{% url 'logout' %}" class="btn btn-secondary" style="float: right;">Logout</a>
+        <a href="{% url 'add' %}" class="btn btn-primary" style="float: right;">Add Goal</a>
+        <dir class="clearfix"></dir>
+    </div>
+    <table class="table">
+        <thead class="thead-dark">
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Title</th>
+                <th scope="col">Description</th>
+                <th scope="col">Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for goal in goals %}
+            <tr scope="row">
+                <td>{{ forloop.counter }}</td>
+                <td>{{goal.title}}</td>
+                <td>{{goal.description}}</td>
+                <td>
+                    <a class="btn btn-success" href="{% url 'edit' goal.pk %}">Edit</a>
+                    <a class="btn btn-danger" data-href="{% url 'delete' goal.pk %}" type="button" class="btn btn-primary" onclick="delete_confirmation($(this))">Delete</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="container">
+    <!-- The Modal -->
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog ">
+            <div class="modal-content">
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Confirm delete ?</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <p>Are you sure you want to delete  ? This process is irreversible.</p>
+                </div>
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <a class="btn btn-danger" id="id_delete_confirm_btn" href="">Delete</a>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js" integrity="sha384-smHYKdLADwkXOn1EmN1qk/HfnUcbVRZyYmZ4qpPea6sjB/pTJ0euyQp0Mk8ck+5T"
+    crossorigin="anonymous"></script>
+<script>
+    function delete_confirmation($this) {
+        $("#id_delete_confirm_btn").attr("href", $this.attr("data-href"));
+        //initializes and invokes show immediately
+        // jquery $(selector).action()
+        $("#myModal").modal("show");                    
+    }
+</script>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
