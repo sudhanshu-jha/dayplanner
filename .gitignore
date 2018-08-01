@@ -98,4 +98,8 @@ ENV/
 # Ignore .vscode files
 *.vscode
 
+# Ignore .vscode files
+*.venv
+
+*.dayplanner/migrations
 
