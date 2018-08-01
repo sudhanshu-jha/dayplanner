@@ -1,8 +1,21 @@
-{% extends 'goals/base.html' %} {% block content %}
-
-<h1 class="h1 mb-title "> {% block title %}Signup {% endblock %}</h1>
-<form method="post">
-        {% csrf_token %} {{ form.as_p }}
-        <input type="submit" value="Submit" class="btn btn-primary" />
-</form>
+{% extends 'goals/base.html' %} 
+{% block content %}
+  <h2>{% block title %}Sign up{% endblock %}</h2>
+  <form method="post">
+    {% csrf_token %}
+      {% for field in form %}
+      <p>
+        {{ field.label_tag }}<br>
+        {{ field }}
+        {% if field.help_text %}
+          <small style="display: none">{{ field.help_text }}</small>
+        {% endif %}
+        {% for error in field.errors %}
+          <p style="color: red">{{ error }}</p>
+        {% endfor %}
+      </p>
+      {% endfor %}
+      <a class="btn btn-primary" >Signup</a>
+    <!-- <button type="submit">Sign up</button> -->
+  </form>
 {% endblock %}

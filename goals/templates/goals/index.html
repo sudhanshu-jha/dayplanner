@@ -15,10 +15,9 @@
 <body>
 <div class="container">
     <div>
-        <h1 style="float: left;">Goals {{user}}</h1>
-        <!-- <a href="{% url 'login' %}" class="btn btn-secondary" style="float: right;">Login</a> -->
-        <a href="{% url 'logout' %}" class="btn btn-secondary" style="float: right;">Logout</a>
-        <a href="{% url 'add' %}" class="btn btn-primary" style="float: right;">Add Goal</a>
+        <h1 style="float: left;">Goals</h1>
+        <a href="{% url 'logout' %}" class="btn btn-secondary btn-sm" style="float: right;">Logout</a>
+        <a href="{% url 'add' %}" class="btn btn-primary btn-sm" style="float: right;">Add Goal</a>
         <dir class="clearfix"></dir>
     </div>
     <table class="table">
@@ -27,6 +26,8 @@
                 <th scope="col">#</th>
                 <th scope="col">Title</th>
                 <th scope="col">Description</th>
+                <th scope="col">Created</th>
+                <th scope="col">Modified</th>
                 <th scope="col">Action</th>
             </tr>
         </thead>
@@ -36,9 +37,11 @@
                 <td>{{ forloop.counter }}</td>
                 <td>{{goal.title}}</td>
                 <td>{{goal.description}}</td>
+                <td>{{goal.created}}</td>
+                <td>{{goal.modified}}</td>
                 <td>
-                    <a class="btn btn-success" href="{% url 'edit' goal.pk %}">Edit</a>
-                    <a class="btn btn-danger" data-href="{% url 'delete' goal.pk %}" type="button" class="btn btn-primary" onclick="delete_confirmation($(this))">Delete</a>
+                    <a class="btn btn-success btn-sm" href="{% url 'edit' goal.pk %}"></span>Edit</a>
+                    <a class="btn btn-danger btn-sm" data-href="{% url 'delete' goal.pk %}" type="button" class="btn btn-primary" onclick="delete_confirmation($(this))">Delete</a>
                 </td>
             </tr>
             {% endfor %}
@@ -81,7 +84,7 @@
         $("#id_delete_confirm_btn").attr("href", $this.attr("data-href"));
         //initializes and invokes show immediately
         // jquery $(selector).action()
-        $("#myModal").modal("show");                    
+        $("#myModal").modal("show");
     }
 </script>
 </body>

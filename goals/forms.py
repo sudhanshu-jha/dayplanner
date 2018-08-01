@@ -10,8 +10,8 @@ class GoalForm(forms.Form):
 
 class LoginForm(forms.Form):
     use_required_attribute = False
-    email = forms.EmailField(label='email')
-    password = forms.CharField(label='password', widget=forms.PasswordInput())
+    email = forms.EmailField(label='Email')
+    password = forms.CharField(label='Password', widget=forms.PasswordInput())
 
     def clean_email(self):
         # will be populated with any data that has survived so far
@@ -24,11 +24,10 @@ class LoginForm(forms.Form):
 
 
 class SignUpForm(UserCreationForm):
-    email = forms.EmailField()
+    email = forms.EmailField(max_length=200, help_text='Required')
     class Meta:
         model = User
-        fields = ('username', 'email', 'password1', 'password2', )
-
+        fields = ('username','first_name','last_name', 'email', 'password1', 'password2',)
 
 
 

@@ -1,7 +1,6 @@
 {% extends 'goals/base.html' %} 
 {% load widget_tweaks %}
 {% block content %}
-
 <h1 class="h1 mb-title "> {% block title %}Log in {% endblock %}</h1>
 <form method="post">
         {% csrf_token %} {{ form}}
