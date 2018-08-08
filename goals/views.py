@@ -12,11 +12,29 @@ from django.template.loader import render_to_string
 from .tokens import account_activation_token
 from django.contrib.auth.models import User
 from django.core.mail import EmailMessage
-
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.db.models import Q
 
 @login_required
 def index(request):
-    goals = Goal.objects.filter(user=request.user)
+    goals = Goal.objects.filter(user=request.user).order_by('modified')
+    query = request.GET.get("q")
+    if query:
+        goals = goals.filter(
+            Q(title__icontains=query)|
+            Q(description__icontains=query)|
+            Q(created__icontains=query)
+            ).distinct()
+    page = request.GET.get('page', 1)
+    """ pagination """
+    paginator = Paginator(goals, 5)
+    try:
+        goals = paginator.page(page)
+    except PageNotAnInteger:
+        goals = paginator.goals(1)
+    except EmptyPage:
+        goals = paginator.page(paginator.num_pages)
+
     context = {
         'goals': goals
     }
@@ -32,7 +50,8 @@ def add(request):
             Goal.objects.create(
                 user=request.user,
                 title=form.cleaned_data['title'],
-                description=form.cleaned_data['description']
+                description=form.cleaned_data['description'],
+                status=form.cleaned_data['status']
             )
             return redirect("/")       
         else:
@@ -56,11 +75,12 @@ def edit(request, pk):
             user=request.user,
             goal.title = form.cleaned_data['title']
             goal.description = form.cleaned_data['description']
+            status=form.cleaned_data['status']
             goal.save()
             return redirect("/")
     else:
         # specify initial data for forms by specifying an initial parameter when instantiating the form.
-        form = GoalForm(initial={"title": goal.title,"description": goal.description})
+        form = GoalForm(initial={"title": goal.title,"description": goal.description ,"status":goal.status})
     return render(request, 'goals/add.html', {'form': form})
 
 @login_required

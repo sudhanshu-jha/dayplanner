@@ -1,14 +1,18 @@
 {% extends 'base.html' %} 
 {% block content %}
     <div>
-        <h1 style="float: left;">Goals</h1>
-        <a href="{% url 'add' %}" class="btn btn-primary btn-sm" style="float: right;"> Add Goal</a>
+        <h1 style="float: left;"> My Goals</h1>
         <dir class="clearfix"></dir>
     </div>
+    <form method='GET' action=''>
+        <input type='text' name='q' placeholder='Search goals' value='{{ request.GET.q }}'/>
+        <input type='submit' value='Search' />
+    </form>
     <table class="table">
+            <a href="{% url 'add' %}" class="btn btn-primary btn-sm" style="float: right;"> Add Goal</a>
         <thead>
             <tr>
-                <th>#</th>
+                <!-- <th>#</th> -->
                 <th>Title</th>
                 <th>Description</th>
                 <th>Created</th>
@@ -18,7 +22,7 @@
         <tbody>
             {% for goal in goals %}
             <tr>
-                <td>{{ forloop.counter }}</td>
+                <!-- <td>{{ forloop.counter }}</td> -->
                 <td>{{goal.title}}</td>
                 <td>{{goal.description}}</td>
                 <td>{{goal.created}}</td>
@@ -30,6 +34,45 @@
             {% endfor %}
         </tbody>
     </table>
+    
+    {% if goals.has_other_pages %}
+            <ul class="pagination">
+              {% if goals.has_previous %}
+              <li>
+                <a href="?page={{ goals.previous_page_number }}">&laquo;Previous</a>
+              </li>
+              {% else %}
+              <li class="disabled">
+                <span>&laquo;Previous</span>
+              </li>
+              {% endif %}
+              {% for i in goals.paginator.page_range %}
+                {% if goals.number == i %}
+                  <li class="active">
+                    <span>{{ i }}
+                      <span class="sr-only">(current)</span>
+                    </span>
+                  </li>
+                {% else %}
+                  <li>
+                    <a href="?page={{ i }}">{{ i }} </a>
+                  </li>
+                {% endif %} 
+              {% endfor %}
+              {% if goals.has_next %}
+                <li>
+                  <a href="?page={{ goals.next_page_number }}">Next&raquo;</a>
+                </li>
+              {% else %}
+                <li class="disabled">
+                  <span>Next&raquo;</span>
+                </li>
+              {% endif %}
+            </ul>
+        {% endif %}
+        <!-- Pagination ends -->
+    </div>
+  </div>
     <!-- The Modal -->
     <div class="modal fade" id="myModal">
         <div class="modal-dialog ">
