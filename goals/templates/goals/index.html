@@ -31,6 +31,12 @@
                     <a class="btn btn-danger btn-sm" data-href="{% url 'delete' goal.pk %}" type="button" class="btn btn-primary" onclick="delete_confirmation($(this))">Delete</a>
                 </td>
             </tr>
+            {% empty %}
+                <tr>
+                  <td colspan="9" class="text-center bg-info">
+                    <strong> No Goal.</strong>
+                  </td>
+                </tr>
             {% endfor %}
         </tbody>
     </table>
