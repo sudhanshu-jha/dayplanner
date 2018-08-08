@@ -101,5 +101,6 @@ ENV/
 # Ignore .vscode files
 *.venv
 
-*.dayplanner/migrations
+# Ignore migrations files
+goals/migrations
 

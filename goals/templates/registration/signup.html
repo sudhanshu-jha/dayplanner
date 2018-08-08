@@ -1,4 +1,4 @@
-{% extends 'goals/base.html' %} 
+{% extends 'base.html' %} 
 {% block content %}
   <h2>{% block title %}Sign up{% endblock %}</h2>
   <form method="post">
@@ -15,7 +15,7 @@
         {% endfor %}
       </p>
       {% endfor %}
-      <a class="btn btn-primary" >Signup</a>
-    <!-- <button type="submit">Sign up</button> -->
+      <button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-user"></span> Signup</button>
+    <a class= btn btn-sm href="{% url 'login' %}"><span class="glyphicon glyphicon-log-in"></span> Already user login</a>
   </form>
 {% endblock %}
