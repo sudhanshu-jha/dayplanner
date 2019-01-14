@@ -2,53 +2,42 @@ from django.contrib.auth.models import User
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 
+
 class GoalForm(forms.Form):
     use_required_attribute = False
-    title = forms.CharField(label='Title')
-    description = forms.CharField(label='Description', widget=forms.Textarea())
+    title = forms.CharField(label="Title")
+    description = forms.CharField(label="Description", widget=forms.Textarea())
 
 
 class LoginForm(forms.Form):
     use_required_attribute = False
-    email = forms.EmailField(label='Email')
-    password = forms.CharField(label='Password', widget=forms.PasswordInput())
+    email = forms.EmailField(label="Email")
+    password = forms.CharField(label="Password", widget=forms.PasswordInput())
 
     def clean_email(self):
         # will be populated with any data that has survived so far
-        email = self.cleaned_data['email']
+        email = self.cleaned_data["email"]
         if not User.objects.filter(email=email).exists():
             # if the validation error is raised, the form will display an error message at the top of the form (normally) describing the problem.
             raise forms.ValidationError(
-                "An account with this email address does not exist.")
-        return self.cleaned_data['email']
+                "An account with this email address does not exist."
+            )
+        return self.cleaned_data["email"]
 
 
 class SignUpForm(UserCreationForm):
-    email = forms.EmailField(max_length=200, help_text='Required')
+    email = forms.EmailField(max_length=200, help_text="Required")
+
     class Meta:
         model = User
-        fields = ('username','first_name','last_name', 'email', 'password1', 'password2',)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        fields = (
+            "username",
+            "first_name",
+            "last_name",
+            "email",
+            "password1",
+            "password2",
+        )
 
 
 # class GoalForm(forms.ModelForm):

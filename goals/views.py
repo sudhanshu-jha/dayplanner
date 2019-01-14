@@ -1,7 +1,6 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
 from goals.models import Goal
 from goals.forms import GoalForm, LoginForm, SignUpForm
 from django.contrib.auth.decorators import login_required
@@ -15,17 +14,18 @@ from django.core.mail import EmailMessage
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db.models import Q
 
+
 @login_required
 def index(request):
-    goals = Goal.objects.filter(user=request.user).order_by('modified')
+    goals = Goal.objects.filter(user=request.user).order_by("modified")
     query = request.GET.get("q")
     if query:
         goals = goals.filter(
-            Q(title__icontains=query)|
-            Q(description__icontains=query)|
-            Q(created__icontains=query)
-            ).distinct()
-    page = request.GET.get('page', 1)
+            Q(title__icontains=query)
+            | Q(description__icontains=query)
+            | Q(created__icontains=query)
+        ).distinct()
+    page = request.GET.get("page", 1)
     """ pagination """
     paginator = Paginator(goals, 5)
     try:
@@ -35,75 +35,85 @@ def index(request):
     except EmptyPage:
         goals = paginator.page(paginator.num_pages)
 
-    context = {
-        'goals': goals
-    }
-    return render(request, 'goals/index.html', context)
+    context = {"goals": goals}
+    return render(request, "goals/index.html", context)
+
 
 @login_required
 def add(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = GoalForm(request.POST)
-        #check whether form is valid
+        # check whether form is valid
         if form.is_valid():
-            #To create and save an object in a single step
+            # To create and save an object in a single step
             Goal.objects.create(
                 user=request.user,
-                title=form.cleaned_data['title'],
-                description=form.cleaned_data['description'],
-                status=form.cleaned_data['status']
+                title=form.cleaned_data["title"],
+                description=form.cleaned_data["description"],
+                status=form.cleaned_data["status"],
             )
-            return redirect("/")       
+            return redirect("/")
         else:
             return redirect("")
     else:
         # if a GET (or any other method) we'll create a blank form
         form = GoalForm()
         # it will create an empty form instance and place it in the template context/form to be rendered.
-    return render(request, 'goals/add.html', {'form': form})
+    return render(request, "goals/add.html", {"form": form})
+
 
 #############pk required#################
 
+
 @login_required
 def edit(request, pk):
-    goal = Goal.objects.get(pk=pk,user=request.user)
+    goal = Goal.objects.get(pk=pk, user=request.user)
     if request.method == "POST":
         form = GoalForm(request.POST)
-        #check whether form is valid
+        # check whether form is valid
         if form.is_valid():
             # process the data in form.cleaned_data as required in is_valid()
-            user=request.user,
-            goal.title = form.cleaned_data['title']
-            goal.description = form.cleaned_data['description']
-            status=form.cleaned_data['status']
+            user = (request.user,)
+            goal.title = form.cleaned_data["title"]
+            goal.description = form.cleaned_data["description"]
+            status = form.cleaned_data["status"]
             goal.save()
             return redirect("/")
     else:
         # specify initial data for forms by specifying an initial parameter when instantiating the form.
-        form = GoalForm(initial={"title": goal.title,"description": goal.description ,"status":goal.status})
-    return render(request, 'goals/add.html', {'form': form})
+        form = GoalForm(
+            initial={
+                "title": goal.title,
+                "description": goal.description,
+                "status": goal.status,
+            }
+        )
+    return render(request, "goals/add.html", {"form": form})
+
 
 @login_required
 def delete(request, pk):
     Goal.objects.get(pk=pk, user=request.user).delete()
     return redirect("/")
-        # return redirect('/login')
+    # return redirect('/login')
+
 
 #############Accounts#################
 
+
 def login_user(request):
     if not request.user.is_authenticated:
-    # If form is submitted
-        if request.method == 'POST':
-            #create a form instance and populate it with data from the request
+        # If form is submitted
+        if request.method == "POST":
+            # create a form instance and populate it with data from the request
             form = LoginForm(request.POST)
-            #check whether form is valid
+            # check whether form is valid
             if form.is_valid():
                 # process the data in form.cleaned_data as required
-                email = form.cleaned_data['email']
-                password = form.cleaned_data['password']
+                email = form.cleaned_data["email"]
+                password = form.cleaned_data["password"]
                 user_obj = User.objects.get(email=email)
-                #authenticate() to verify a set of credentials passed.
+                # authenticate() to verify a set of credentials passed.
                 user = authenticate(username=user_obj.username, password=password)
                 if user is not None:
                     logout(request)
@@ -118,16 +128,18 @@ def login_user(request):
             # if a GET (or any other method) we'll create a blank form
             form = LoginForm()
         # it will create an empty form instance and place it in the template context/form to be rendered.
-        return render(request, 'registration/login.html', {'form': form})
+        return render(request, "registration/login.html", {"form": form})
     else:
         return redirect("/")
+
 
 def logout_user(request):
     logout(request)
     return redirect("/login")
 
+
 def signup(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = SignUpForm(request.POST)
         if form.is_valid():
             user = form.save(commit=False)
@@ -135,51 +147,42 @@ def signup(request):
             user.save()
 
             current_site = get_current_site(request)
-            mail_subject = 'Activate your account.'
-            message = render_to_string('goals/acc_active_email.html', {
-                'user': user,
-                'domain': current_site.domain,
-                'uid':urlsafe_base64_encode(force_bytes(user.pk)),
-                'token':account_activation_token.make_token(user),
-            })
-            to_email = form.cleaned_data.get('email')
+            mail_subject = "Activate your account."
+            message = render_to_string(
+                "goals/acc_active_email.html",
+                {
+                    "user": user,
+                    "domain": current_site.domain,
+                    "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                    "token": account_activation_token.make_token(user),
+                },
+            )
+            to_email = form.cleaned_data.get("email")
             email = EmailMessage(mail_subject, message, to=[to_email])
             email.send()
-            return HttpResponse('Please confirm your email address to complete the registration')
+            return HttpResponse(
+                "Please confirm your email address to complete the registration"
+            )
     else:
         form = SignUpForm()
-    return render(request, 'registration/signup.html', {'form': form})
+    return render(request, "registration/signup.html", {"form": form})
 
 
 def activate(request, uidb64, token):
     try:
         uid = force_text(urlsafe_base64_decode(uidb64))
         user = User.objects.get(pk=uid)
-    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
         user = None
     if user is not None and account_activation_token.check_token(user, token):
         user.is_active = True
         user.save()
         login(request, user)
-        return HttpResponse('Thank you for your email confirmation. Now you can login your account.')
+        return HttpResponse(
+            "Thank you for your email confirmation. Now you can login your account."
+        )
     else:
-        return HttpResponse('Activation link is invalid!')
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+        return HttpResponse("Activation link is invalid!")
 
 
 # def signup_user(request):
@@ -195,21 +198,6 @@ def activate(request, uidb64, token):
 #     else:
 #         form = SignUpForm()
 #     return render(request, 'goals/signup.html', {'form': form})
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 # def add(request):
