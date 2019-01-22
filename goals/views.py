@@ -26,7 +26,6 @@ def index(request):
             | Q(created__icontains=query)
         ).distinct()
     page = request.GET.get("page", 1)
-    """ pagination """
     paginator = Paginator(goals, 5)
     try:
         goals = paginator.page(page)
@@ -72,10 +71,8 @@ def edit(request, pk):
         # check whether form is valid
         if form.is_valid():
             # process the data in form.cleaned_data as required in is_valid()
-            user = request.user
             goal.title = form.cleaned_data["title"]
             goal.description = form.cleaned_data["description"]
-            status = form.cleaned_data["status"]
             goal.save()
             return redirect("/")
     else:
