@@ -50,7 +50,6 @@ def add(request):
                 user=request.user,
                 title=form.cleaned_data["title"],
                 description=form.cleaned_data["description"],
-                status=form.cleaned_data["status"],
             )
             return redirect("/")
         else:
@@ -73,7 +72,7 @@ def edit(request, pk):
         # check whether form is valid
         if form.is_valid():
             # process the data in form.cleaned_data as required in is_valid()
-            user = (request.user,)
+            user = request.user
             goal.title = form.cleaned_data["title"]
             goal.description = form.cleaned_data["description"]
             status = form.cleaned_data["status"]
@@ -81,13 +80,7 @@ def edit(request, pk):
             return redirect("/")
     else:
         # specify initial data for forms by specifying an initial parameter when instantiating the form.
-        form = GoalForm(
-            initial={
-                "title": goal.title,
-                "description": goal.description,
-                "status": goal.status,
-            }
-        )
+        form = GoalForm(initial={"title": goal.title, "description": goal.description})
     return render(request, "goals/add.html", {"form": form})
 
 
@@ -183,80 +176,3 @@ def activate(request, uidb64, token):
         )
     else:
         return HttpResponse("Activation link is invalid!")
-
-
-# def signup_user(request):
-#     if request.method == 'POST':
-#         form = SignUpForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             username = form.cleaned_data.get('username')
-#             raw_password = form.cleaned_data.get('password1')
-#             user = authenticate(username=username, password=raw_password)
-#             login(request, user)
-#             return redirect('/')
-#     else:
-#         form = SignUpForm()
-#     return render(request, 'goals/signup.html', {'form': form})
-
-
-# def add(request):
-#     if request.method == "POST":
-#         form = GoalForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             # Goal.objects.create(
-#             #     title=form.cleaned_data['title'],
-#             #     description=form.cleaned_data['description']
-#             # )
-#             return redirect("/")
-#     else:
-#         form = GoalForm()
-
-#     return render(request, "goals/add.html", {
-#         "form": form,
-#         "title": "Add"
-#     })
-
-
-# def edit(request, pk):
-#     goal = Goal.objects.get(pk=pk)
-
-#     if request.method == "POST":
-#         form = GoalForm(request.POST, instance=goal)
-#         print("Here")
-#         if form.is_valid():
-#             print("there")
-#             form.save()
-#             return redirect("/")
-#     else:
-#         form = GoalForm(instance=goal)
-
-#     return render(request, "goals/add.html", {
-#         "form": form,
-#         "title": "Edit"
-#     })
-
-
-# def login_user(request):
-#     if request.method == 'POST':
-#         form=LoginForm(request.POST)
-#         if form.is_valid():
-#             email=form.cleaned_data['email']
-#             password=form.cleaned_data['password']
-#             user_obj = User.objects.get(email=email)
-#             user = authenticate(username=user_obj.username, password=password)
-#             if user is not None:
-#                 if user.is_active:
-#                     login(request, user)
-#                     print(user)
-#                     return redirect("/")
-#                 else:
-#                     return HttpResponse("You're account is inactive.")
-#             else:
-#                 # return redirect("/login.html")
-#                 print(email)
-#                 return HttpResponse("You're account does not exist.")
-#     else:
-#         form = LoginForm()
-#     return render(request,'goals/login.html',{'form':form})
