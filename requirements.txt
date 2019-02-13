@@ -3,7 +3,6 @@
 # ------------------------------------------------------------------------------
 Django==1.11.17
 django-widget-tweaks
-pkg-resources
 psycopg2
 
 # Code quality

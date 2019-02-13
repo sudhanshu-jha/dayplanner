@@ -95,8 +95,9 @@ ENV/
 # Ignore .sh files
 *.sh
 
-# Ignore .vscode files
+# Ignore IDE files
 *.vscode
+.*idea/
 
 # Ignore .vscode files
 *.venv
