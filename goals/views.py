@@ -17,7 +17,9 @@ from django.db.models import Q
 
 @login_required
 def index(request):
-    goals = Goal.objects.filter(user=request.user).order_by("modified")
+    # goals = Goal.objects.filter(user=request.user).order_by("modified")
+    goals = Goal.objects.filter(user=request.user, created_at__gte=datetime.toaday())
+    
     query = request.GET.get("q")
     if query:
         goals = goals.filter(
